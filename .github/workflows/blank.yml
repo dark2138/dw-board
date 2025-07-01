@@ -1,0 +1,40 @@
+name: sangwon board
+run: ./gradlew clean build
+env:
+- name: Get current time
+AWS_REGION: ap-northeast-2
+uses: 1466587594/get-current-time@v2
+id: current-time
+on:
+with:
+push:
+format: YYYY-MM-DDTHH-mm-ss
+branches: [ main ]
+utcOffset: "+09:00"
+jobs:
+- name: Generate deployment package
+deploy:
+run: |
+name: Deploy
+mkdir -p deploy
+runs-on: ubuntu-latest
+cp build/libs/*.jar deploy/application.jar
+environment: production
+cd deploy && zip -r deploy.zip .
+steps:
+- name: Beanstalk Deploy
+- name: Checkout
+uses: einaregilsson/beanstalk-deploy@v21
+uses: actions/checkout@v3
+with:
+aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+- name: Set up JDK 17
+aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+uses: actions/setup-java@v2
+region: ${{ env.AWS_REGION }}
+with:
+application_name: dw-board
+java-version: '17'
+environment_name: dw-board-env
+distribution: 'zulu'
+version_label: github-action-${{steps.curr
