@@ -14,7 +14,7 @@ class SampleController {
     @PostMapping("/sample")
     fun postSample(
         @RequestParam name: String
-    ): String {
+    ): String { // good
         return "sample name: $name"
     }
 }
