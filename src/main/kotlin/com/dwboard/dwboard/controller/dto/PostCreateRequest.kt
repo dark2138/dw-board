@@ -2,7 +2,6 @@ package com.dwboard.dwboard.controller.dto
 
 import com.dwboard.dwboard.service.dto.PostCreateRequestDto
 
-
 data class PostCreateRequest(
     val title: String,
     val content: String,
