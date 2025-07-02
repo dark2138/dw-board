@@ -1,6 +1,6 @@
-package com.dwboard.dwboard.dto
+package com.dwboard.dwboard.service.dto
 
-data class PostUpdateRequest(
+data class PostUpdateRequestDto(
     val title: String,
     val content: String,
     val updatedBy: String,

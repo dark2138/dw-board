@@ -1,4 +1,4 @@
-package com.dwboard.dwboard.dto
+package com.dwboard.dwboard.controller.dto
 
 import org.springframework.web.bind.annotation.RequestParam
 

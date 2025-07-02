@@ -4,21 +4,33 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import com.dwboard.dwboard.service.dto.PostUpdateRequestDto
+import com.dwboard.dwboard.exception.PostNotUpdatableException
 
 @Entity
 class Post(
     title: String,
     content: String,
     createdBy: String,
-) : BaseEntity(
-    createdBy
-) {
+) : BaseEntity(createdBy) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0L // val이라 한 번 정해지면 바꿀 수 없음.
+    val id: Long = 0L
 
-    var title: String = title // var이라 값을 바꿀 수 있음.
+    var title: String = title
         protected set
     var content: String = content
         protected set
+
+
+    fun update(postUpdateRequestDto: PostUpdateRequestDto) {
+        if (postUpdateRequestDto.updatedBy != this.createdBy) {
+            throw PostNotUpdatableException()
+        }
+        this.title = postUpdateRequestDto.title
+        this.content = postUpdateRequestDto.content
+        super.updatedBy(postUpdateRequestDto.updatedBy)
+    }
+
+
 }

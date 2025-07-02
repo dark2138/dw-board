@@ -1,10 +1,13 @@
 package com.dwboard.dwboard.controller
 
-import com.dwboard.dwboard.dto.PostCreateRequest
-import com.dwboard.dwboard.dto.PostDetailResponse
-import com.dwboard.dwboard.dto.PostSearchRequest
-import com.dwboard.dwboard.dto.PostSummaryResponse
-import com.dwboard.dwboard.dto.PostUpdateRequest
+
+
+import com.dwboard.dwboard.controller.dto.PostCreateRequest
+import com.dwboard.dwboard.controller.dto.PostDetailResponse
+import com.dwboard.dwboard.controller.dto.PostSearchRequest
+import com.dwboard.dwboard.controller.dto.PostSummaryResponse
+import com.dwboard.dwboard.controller.dto.PostUpdateRequest
+import com.dwboard.dwboard.controller.dto.toDto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -16,15 +19,18 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
+import com.dwboard.dwboard.service.PostService
 
 @RestController
-class PostController {
+class PostController (
+  private val postService: PostService,
+) {
 
     @PostMapping("/posts")
     fun createPost(
         @RequestBody postCreateRequest: PostCreateRequest,
     ): Long {
-        return 1L
+        return postService.createPost(postCreateRequest.toDto())
     }
 
     @PutMapping("/posts/{id}")
@@ -32,7 +38,7 @@ class PostController {
         @PathVariable id: Long,
         @RequestBody postUpdateRequest: PostUpdateRequest,
     ): Long {
-        return 1L
+        return postService.updatePost(id, postUpdateRequest.toDto())
     }
 
     @DeleteMapping("/posts/{id}")
@@ -40,8 +46,7 @@ class PostController {
         @PathVariable id: Long,
         @RequestParam createdBy: String,
     ): Long {
-        println(createdBy)
-        return id
+        return postService.deletePost(id, createdBy)
     }
 
     @GetMapping("/posts/{id}")

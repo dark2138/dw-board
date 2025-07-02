@@ -1,9 +1,8 @@
-package com.dwboard.dwboard.dto
+package com.dwboard.dwboard.controller.dto
 
-data class PostDetailResponse(
+data class PostSummaryResponse(
     val id: Long,
     val title: String,
-    val content: String,
     val createdBy: String,
     val createdAt: String,
 )
