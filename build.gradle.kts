@@ -5,7 +5,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
     kotlin("plugin.jpa") version "1.9.25"
-    kotlin("kapt") version "1.8.22"
+    kotlin("kapt") version "1.9.25"
 }
 
 group = "com.dwboard"
@@ -26,17 +26,17 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    runtimeOnly("com.mysql:mysql-connector-j")
-    testImplementation("com.h2database:h2")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("io.kotest:kotest-runner-junit5:5.6.2")
-    testImplementation("io.kotest:kotest-assertions-core:5.6.2")
-    testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
     implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
     kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    runtimeOnly("com.mysql:mysql-connector-j")
+    testImplementation("com.h2database:h2")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.kotest:kotest-runner-junit5:5.6.2")
+    testImplementation("io.kotest:kotest-assertions-core:5.6.2")
+    testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
+    testImplementation("io.kotest.extensions:kotest-extensions-testcontainers:2.0.2")
 }
 
 kotlin {
@@ -57,4 +57,19 @@ tasks.withType<Test> {
 
 tasks.named<Jar>("jar") {
     enabled = false
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs("src/main/kotlin", "build/generated/source/kapt/main")
+        }
+    }
+}
+
+kapt {
+    arguments {
+        arg("querydsl.entityAccessors", "true")
+        arg("querydsl.useFields", "false")
+    }
 }

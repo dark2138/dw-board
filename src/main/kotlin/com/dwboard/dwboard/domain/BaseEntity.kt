@@ -10,7 +10,7 @@ abstract class BaseEntity(
     val createdBy: String = createdBy
     val createdAt: LocalDateTime = LocalDateTime.now()
     var updatedBy: String? = null
-        protected set
+        protected set // 상속받은 클래스에서 접근 가능
     var updatedAt: LocalDateTime? = null
         protected set
 

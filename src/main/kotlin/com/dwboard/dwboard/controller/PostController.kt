@@ -6,6 +6,7 @@ import com.dwboard.dwboard.controller.dto.PostSearchRequest
 import com.dwboard.dwboard.controller.dto.PostSummaryResponse
 import com.dwboard.dwboard.controller.dto.PostUpdateRequest
 import com.dwboard.dwboard.controller.dto.toDto
+import com.dwboard.dwboard.controller.dto.toResponse
 import com.dwboard.dwboard.service.PostService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDateTime
 
 @RestController
 class PostController(
@@ -51,7 +51,7 @@ class PostController(
     fun getPost(
         @PathVariable id: Long,
     ): PostDetailResponse {
-        return PostDetailResponse(1L, "title", "content", "createdBy", LocalDateTime.now().toString())
+        return postService.getPost(id).toResponse()
     }
 
     @GetMapping("/posts")
@@ -59,8 +59,7 @@ class PostController(
         pageable: Pageable,
         postSearchRequest: PostSearchRequest,
     ): Page<PostSummaryResponse> {
-        println("title: ${postSearchRequest.title}")
-        println("createdBy: ${postSearchRequest.createdBy}")
-        return Page.empty()
+        return postService.findPageBy(pageable, postSearchRequest.toDto()) // dto로 변환
+            .toResponse() // toResponse() 메서드를 호출하여 페이지 데이터를 변환
     }
 }
