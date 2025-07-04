@@ -18,4 +18,4 @@ class Comment(
         this.content = content
         super.updatedBy(updatedBy)
     }
-} 
+}
