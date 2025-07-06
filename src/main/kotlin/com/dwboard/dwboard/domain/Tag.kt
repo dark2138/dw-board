@@ -24,7 +24,7 @@ class Tag(
         protected set
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT)) // 외래키 제약조건 비활성화
     var post: Post = post
         protected set
 }
