@@ -2,7 +2,9 @@ package com.dwboard.dwboard.service
 
 import com.dwboard.dwboard.domain.Comment
 import com.dwboard.dwboard.domain.Post
-import com.dwboard.dwboard.exception.*
+import com.dwboard.dwboard.exception.CommentNotDeletableException
+import com.dwboard.dwboard.exception.CommentNotUpdatableException
+import com.dwboard.dwboard.exception.PostNotFoundException
 import com.dwboard.dwboard.repository.CommentRepository
 import com.dwboard.dwboard.repository.PostRepository
 import com.dwboard.dwboard.service.dto.CommentCreateRequestDto

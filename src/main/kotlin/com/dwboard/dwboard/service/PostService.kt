@@ -3,6 +3,7 @@ package com.dwboard.dwboard.service
 import com.dwboard.dwboard.exception.PostNotDeletableException
 import com.dwboard.dwboard.exception.PostNotFoundException
 import com.dwboard.dwboard.repository.PostRepository
+import com.dwboard.dwboard.repository.TagRepository
 import com.dwboard.dwboard.service.dto.PostCreateRequestDto
 import com.dwboard.dwboard.service.dto.PostDetailResponseDto
 import com.dwboard.dwboard.service.dto.PostSearchRequestDto
@@ -21,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(readOnly = true)
 class PostService(
     private val postRepository: PostRepository,
+    private val likeService: LikeService,
+    private val tagRepository: TagRepository,
 ) {
     @Transactional
     fun createPost(requestDto: PostCreateRequestDto): Long {
@@ -35,21 +38,23 @@ class PostService(
     }
 
     @Transactional
-    fun deletePost(id: Long, deleteBy: String): Long {
+    fun deletePost(id: Long, deletedBy: String): Long {
         val post = postRepository.findByIdOrNull(id) ?: throw PostNotFoundException()
-        if (post.createdBy != deleteBy) {
-            throw PostNotDeletableException()
-        }
+        if (post.createdBy != deletedBy) throw PostNotDeletableException()
         postRepository.delete(post)
         return id
     }
 
     fun getPost(id: Long): PostDetailResponseDto {
-        return postRepository.findByIdOrNull(id)?.toDetailResponseDto() ?: throw PostNotFoundException()
+        val likeCount = likeService.countLike(id)
+        return postRepository.findByIdOrNull(id)?.toDetailResponseDto(likeCount) ?: throw PostNotFoundException() 
     }
 
     fun findPageBy(pageRequest: Pageable, postSearchRequestDto: PostSearchRequestDto): Page<PostSummaryResponseDto> {
+        postSearchRequestDto.tag?.let {
+            return tagRepository.findPageBy(pageRequest, it).toSummaryResponseDto(likeService::countLike)
+        }
         return postRepository.findPageBy(pageRequest, postSearchRequestDto)
-            .toSummaryResponseDto() // 페이지 데이터를 결과 형식으로 변환
+            .toSummaryResponseDto(likeService::countLike)
     }
 }

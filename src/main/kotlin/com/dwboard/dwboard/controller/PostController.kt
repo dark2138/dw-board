@@ -59,7 +59,6 @@ class PostController(
         pageable: Pageable,
         postSearchRequest: PostSearchRequest,
     ): Page<PostSummaryResponse> {
-        return postService.findPageBy(pageable, postSearchRequest.toDto()) // dto로 변환
-            .toResponse() // toResponse() 메서드를 호출하여 페이지 데이터를 변환
+        return postService.findPageBy(pageable, postSearchRequest.toDto()).toResponse()
     }
 }

@@ -73,3 +73,7 @@ kapt {
         arg("querydsl.useFields", "false")
     }
 }
+
+tasks.named("runKtlintCheckOverMainSourceSet") {
+    dependsOn("kaptKotlin")
+}

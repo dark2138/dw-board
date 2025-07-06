@@ -4,8 +4,13 @@ import com.dwboard.dwboard.controller.dto.CommentCreateRequest
 import com.dwboard.dwboard.controller.dto.CommentUpdateRequest
 import com.dwboard.dwboard.controller.dto.toDto
 import com.dwboard.dwboard.service.CommentService
-import com.dwboard.dwboard.service.dto.CommentDetailResponseDto
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class CommentController(
@@ -16,21 +21,7 @@ class CommentController(
         @PathVariable postId: Long,
         @RequestBody commentCreateRequest: CommentCreateRequest,
     ): Long {
-        return commentService.createComment(postId, commentCreateRequest.toDto(postId))
-    }
-
-    @GetMapping("/posts/{postId}/comments")
-    fun getCommentsByPost(
-        @PathVariable postId: Long,
-    ): List<CommentDetailResponseDto> {
-        return commentService.getCommentsByPost(postId)
-    }
-
-    @GetMapping("/comments/{commentId}")
-    fun getComment(
-        @PathVariable commentId: Long,
-    ): CommentDetailResponseDto {
-        return commentService.getComment(commentId)
+        return commentService.createComment(postId, commentCreateRequest.toDto())
     }
 
     @PutMapping("/comments/{commentId}")

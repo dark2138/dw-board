@@ -7,7 +7,7 @@ data class CommentCreateRequest(
     val createdBy: String
 )
 
-fun CommentCreateRequest.toDto(postId: Long) = CommentCreateRequestDto(
+fun CommentCreateRequest.toDto() = CommentCreateRequestDto(
     content = content,
     createdBy = createdBy
 )
