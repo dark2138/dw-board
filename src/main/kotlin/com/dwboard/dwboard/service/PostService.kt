@@ -47,7 +47,7 @@ class PostService(
 
     fun getPost(id: Long): PostDetailResponseDto {
         val likeCount = likeService.countLike(id)
-        return postRepository.findByIdOrNull(id)?.toDetailResponseDto(likeCount) ?: throw PostNotFoundException() 
+        return postRepository.findByIdOrNull(id)?.toDetailResponseDto(likeCount) ?: throw PostNotFoundException()
     }
 
     fun findPageBy(pageRequest: Pageable, postSearchRequestDto: PostSearchRequestDto): Page<PostSummaryResponseDto> {
