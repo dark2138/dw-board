@@ -12,3 +12,8 @@ spring:
         properties:
             hibernate:
                 format_sql: true # 쿼리 출력 여부
+    cache:
+        type: redis
+        redis:
+            host: localhost
+            port: 16379

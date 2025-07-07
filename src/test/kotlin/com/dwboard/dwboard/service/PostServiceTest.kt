@@ -14,6 +14,7 @@ import com.dwboard.dwboard.service.dto.PostSearchRequestDto
 import com.dwboard.dwboard.service.dto.PostUpdateRequestDto
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.extensions.testcontainers.perSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -21,6 +22,7 @@ import io.kotest.matchers.string.shouldContain
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
+import org.testcontainers.containers.GenericContainer
 
 @SpringBootTest
 class PostServiceTest(
@@ -30,7 +32,13 @@ class PostServiceTest(
     private val tagRepository: TagRepository,
     private val likeService: LikeService,
 ) : BehaviorSpec({
+    val redisContainer = GenericContainer<Nothing>("redis:5.0.3-alpine")
+
     beforeSpec {
+        redisContainer.portBindings.add("16379:6379")
+        redisContainer.start()
+        listener(redisContainer.perSpec()) // perSpec = 테스트 클래스 전체에서 공유
+        // perTest = 각 테스트마다 격리된 환경을 제공.
         postRepository.saveAll(
             listOf(
                 Post(title = "title1", content = "content1", createdBy = "harris1", tags = listOf("tag1", "tag2")),
@@ -45,6 +53,10 @@ class PostServiceTest(
                 Post(title = "title10", content = "content1", createdBy = "harris2", tags = listOf("tag1", "tag5"))
             )
         )
+    }
+
+    afterSpec {
+        redisContainer.stop()
     }
     given("게시글 생성 시") {
         When("게시글 인풋이 정상적으로 들어오면") {

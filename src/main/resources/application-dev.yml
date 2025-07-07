@@ -13,3 +13,8 @@ spring:
             hibernate:
                 format_sql: true # 쿼리 출력 여부
                 default_batch_fetch_size: 100 # 기본 배치 크기 where 절에 in 을 넣어 최적화
+    cache:
+        type: redis
+        redis:
+            host:
+            port: 6379

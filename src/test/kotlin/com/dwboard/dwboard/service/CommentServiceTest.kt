@@ -34,7 +34,6 @@ class CommentServiceTest(
     afterSpec {
         redisContainer.stop()
     }
-
     given("댓글 생성시") {
         val post = postRepository.save(
             Post(
@@ -48,7 +47,7 @@ class CommentServiceTest(
                 post.id,
                 CommentCreateRequestDto(
                     content = "댓글 내용",
-                    createdBy = "댓글 생성자",
+                    createdBy = "댓글 생성자"
                 )
             )
             then("정상 생성됨을 확인한다.") {
@@ -73,7 +72,6 @@ class CommentServiceTest(
             }
         }
     }
-
     given("댓글 수정시") {
         val post = postRepository.save(
             Post(
@@ -82,7 +80,7 @@ class CommentServiceTest(
                 createdBy = "게시글 생성자"
             )
         )
-        val saved = commentRepository.save(Comment("댓글 내용", "댓글 생성자", post))
+        val saved = commentRepository.save(Comment("댓글 내용", post, "댓글 생성자"))
         When("인풋이 정상적으로 들어오면") {
             val updatedId = commentService.updateComment(
                 saved.id,
@@ -106,14 +104,13 @@ class CommentServiceTest(
                         saved.id,
                         CommentUpdateRequestDto(
                             content = "수정된 댓글 내용",
-                            updatedBy = "다른 사용자"
+                            updatedBy = "수정된 댓글 생성자"
                         )
                     )
                 }
             }
         }
     }
-
     given("댓글 삭제시") {
         val post = postRepository.save(
             Post(
@@ -122,8 +119,8 @@ class CommentServiceTest(
                 createdBy = "게시글 생성자"
             )
         )
-        val saved = commentRepository.save(Comment("댓글 내용", "댓글 생성자", post))
-        val saved2 = commentRepository.save(Comment("댓글 내용2", "댓글 생성자2", post))
+        val saved = commentRepository.save(Comment("댓글 내용", post, "댓글 생성자"))
+        val saved2 = commentRepository.save(Comment("댓글 내용2", post, "댓글 생성자2"))
 
         When("인풋이 정상적으로 들어오면") {
             val commentId = commentService.deleteComment(saved.id, "댓글 생성자")
@@ -134,9 +131,7 @@ class CommentServiceTest(
         }
         When("작성자와 삭제자가 다르면") {
             then("삭제할 수 없는 댓글 예외가 발생한다.") {
-                shouldThrow<CommentNotDeletableException> {
-                    commentService.deleteComment(saved2.id, "다른 사용자")
-                }
+                shouldThrow<CommentNotDeletableException> { commentService.deleteComment(saved2.id, "삭제자") }
             }
         }
     }
